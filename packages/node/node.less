@@ -1,0 +1,60 @@
+.super-flow__node {
+  box-shadow       : 1px 2px 8px rgba(0, 0, 0, .2);
+  user-select      : none;
+
+  position         : absolute;
+  background-color : #ffffff;
+  border           : 1px solid rgb(180, 180, 180);
+  z-index          : 1;
+  outline          : none;
+
+  &.can-move {
+    cursor : move;
+  }
+
+  &-header {
+    background-color : green;
+  }
+
+  .node-side {
+    @size    : 10px;
+    position : absolute;
+    cursor   : crosshair;
+
+    &-top {
+      top    : -@size/2;
+      right  : 0;
+      left   : 0;
+      height : @size;
+    }
+
+    &-right {
+      top    : 0;
+      right  : -@size/2;
+      bottom : 0;
+      width  : @size;
+    }
+
+    &-bottom {
+      right  : 0;
+      bottom : -@size/2;
+      left   : 0;
+      height : @size;
+    }
+
+    &-left {
+      top    : 0;
+      bottom : 0;
+      left   : -@size/2;
+      width  : @size;
+    }
+  }
+
+  &:hover {
+    box-shadow : 1px 2px 8px rgba(0, 0, 0, .4);
+  }
+
+  &.isSelect {
+    z-index : 2;
+  }
+}
