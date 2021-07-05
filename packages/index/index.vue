@@ -65,7 +65,7 @@
     </graph-node>
 
     <graph-menu
-      :visible.sync="menuConf.visible"
+      v-model:visible="menuConf.visible"
       :graph="graph"
       :position="menuConf.position"
       :list="menuConf.list"

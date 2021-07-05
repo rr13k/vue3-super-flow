@@ -380,15 +380,12 @@ export default {
     },
 
     sideMousedown(evt, node, startAt) {
-      console.log('这里打的出来吗1')
       if (this.linkAddable) {
         const link = this.graph.createLink({
           start: node,
           startAt,
         });
-        console.log('这里打的出来吗2')
         link.movePosition = getOffset(evt, this.$el);
-        console.log('这里打的出来吗3')
         this.temEdgeConf.link = link
         this.temEdgeConf.visible = true;
       }

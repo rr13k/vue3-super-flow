@@ -136,7 +136,7 @@
 
     <el-dialog
       :title="drawerConf.title"
-      :visible.sync="drawerConf.visible"
+      v-model:visible="drawerConf.visible"
       :close-on-click-modal="false"
       width="500px">
       <el-form
@@ -217,8 +217,10 @@
             conf.visible = true
             conf.type = type
             conf.info = info
+            console.log('here')
             if (conf.type === drawerType.node) {
               conf.title = '节点'
+              console.log( 'debug',this.$refs,this.$refs.nodeSetting)
               if (this.$refs.nodeSetting) this.$refs.nodeSetting.resetFields()
               this.$set(this.nodeSetting, 'name', info.meta.name)
               this.$set(this.nodeSetting, 'desc', info.meta.desc)
@@ -389,7 +391,7 @@
             {
               label: '编辑',
               selected: node => {
-                this.drawerConf.open(drawerType.node, node)
+                console.log('关了吧')
               }
             }
           ]
