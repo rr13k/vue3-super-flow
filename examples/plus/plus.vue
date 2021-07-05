@@ -377,6 +377,12 @@
               selected: graph => {
                 graph.selectAll()
               }
+            },
+            {
+              label: '保存',
+              selected: graph => {
+                console.log('josn',graph.toJSON())
+              }
             }
           ]
         ],

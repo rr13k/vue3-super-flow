@@ -364,6 +364,9 @@ export default {
 
     nodeMouseup() {
       this.graph.addLink(this.temEdgeConf.link);
+      var {start,_end} = this.temEdgeConf.link
+      console.log('绑定关系:', '起点', start,'终点', _end)
+      start.childrens.push(_end)
     },
 
     nodeContextmenu(evt, node) {
@@ -380,6 +383,7 @@ export default {
     },
 
     sideMousedown(evt, node, startAt) {
+      console.log('边缘按下',evt, node, startAt)
       if (this.linkAddable) {
         const link = this.graph.createLink({
           start: node,

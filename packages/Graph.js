@@ -142,6 +142,16 @@ class Graph extends GraphEvent {
     if (this.mouseonLink === link) {
       this.mouseonLink = null
     }
+    //  从关联关系中删除
+    var {start,_end} = link
+
+    for(let i in start.childrens){
+      let node = start.childrens[i]
+      if(node.id === _end.id){
+        start.childrens.splice(i,1)
+      }
+    }
+
     return link
   }
   

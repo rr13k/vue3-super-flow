@@ -31,6 +31,7 @@ export default class GraphNode {
     this.id = id
     this.coordinate = [...coordinate]
     this.meta = meta
+    this.childrens = []
     
     this.width = width
     this.height = height
@@ -177,7 +178,8 @@ export default class GraphNode {
       width: this.width,
       height: this.height,
       coordinate: [...this.coordinate],
-      meta: this.meta
+      meta: this.meta,
+      childrens: this.childrens
     }
   }
 }
