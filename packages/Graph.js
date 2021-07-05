@@ -172,10 +172,35 @@ class Graph extends GraphEvent {
   }
   
   toJSON() {
+    //  从root节点开始便利添加meta的内容
+    var tree = {}
+
+    const getTree = (node)=>{
+      let _t = {
+        ...node.meta,
+        childrens:[]
+      }
+      if(node.childrens.length > 0){
+        for(let ch of  node.childrens){
+          _t.childrens.push(getTree(ch))
+        }
+        return _t
+      }else{
+          return _t
+      }
+    } 
+
+    // 获取根节点
+    const root = this.nodeList.find(i=>{return i.meta.prop == 'root'})
+    if(root !== undefined){
+      tree = getTree(root)
+    }
+
     return {
       origin: this.origin,
       nodeList: this.nodeList.map(node => node.toJSON()),
-      linkList: this.linkList.map(link => link.toJSON())
+      linkList: this.linkList.map(link => link.toJSON()),
+      tree
     }
   }
   

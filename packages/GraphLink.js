@@ -291,7 +291,6 @@ export default class GraphLink {
   }
   
   toJSON() {
-    console.log(this.end)
     return {
       id: this.id,
       startId: this.start.id,

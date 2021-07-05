@@ -178,8 +178,7 @@ export default class GraphNode {
       width: this.width,
       height: this.height,
       coordinate: [...this.coordinate],
-      meta: this.meta,
-      childrens: this.childrens
+      meta: this.meta
     }
   }
 }
