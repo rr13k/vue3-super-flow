@@ -1,7 +1,7 @@
 {
   "name": "vue3-super-flow",
   "main": "/dist/vue3-super-flow.es.js",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",

@@ -1,0 +1,12 @@
+/src
+/test
+/node_modules
+.tern-*
+rollup.config.js
+tsconfig.json
+vite.config.ts
+
+/examples
+/packages
+/public
+/yarn-error.log
