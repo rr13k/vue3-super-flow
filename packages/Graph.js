@@ -70,6 +70,7 @@ class Graph extends GraphEvent {
       const end = pointMap[endId]
       
       if (start && end) {
+        // 在这里也得维护初始tree关系，明天写
         list.push(
           this.createLink({
             start,
@@ -79,6 +80,7 @@ class Graph extends GraphEvent {
             endAt
           })
         )
+        start.childrens.push(end)
       }
     })
     
@@ -176,6 +178,7 @@ class Graph extends GraphEvent {
     var tree = {}
 
     const getTree = (node)=>{
+      console.log(node)
       let _t = {
         ...node.meta,
         childrens:[]
