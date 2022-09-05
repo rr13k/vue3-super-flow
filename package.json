@@ -1,17 +1,19 @@
 {
   "name": "vue3-super-flow",
   "main": "/dist/vue3-super-flow.es.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "ck-build": "vue-tsc --noEmit && vite build",
     "plus": "vite --mode plus",
+    "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
     "vue": "^3.0.5"
   },
   "devDependencies": {
+    "@types/node": "^18.7.14",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.5",
     "less": "^4.1.1",

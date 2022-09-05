@@ -139,7 +139,6 @@ export default {
     },
   },
   mounted() {
-    console.log('组件执行啦',this.temEdgeConf)
     document.addEventListener("mouseup", this.docMouseup);
     document.addEventListener("mousemove", this.docMousemove);
     this.$nextTick(() => {
@@ -444,11 +443,19 @@ export default {
     origin() {
       this.graph.origin = this.origin || [];
     },
-    nodeList() {
-      this.graph.initNode(this.nodeList);
+    nodeList: {
+      handler() {
+        this.graph.initNode(this.nodeList);
+        // 增加节点时，重新渲染线，避免同时修改渲染link时缺少node节点，导致线不显示
+        this.graph.initLink(this.linkList);
+      },
+      deep: true
     },
-    linkList() {
-      this.graph.initLink(this.linkList);
+    linkList: {
+      handler() {
+        this.graph.initLink(this.linkList);
+      },
+      deep: true
     },
   },
   install(Vue) {
