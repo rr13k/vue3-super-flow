@@ -1,7 +1,7 @@
 {
   "name": "vue3-super-flow",
   "main": "/dist/vue3-super-flow.es.js",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "dev": "vite",
     "ck-build": "vue-tsc --noEmit && vite build",
