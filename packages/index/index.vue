@@ -6,7 +6,12 @@
 <template>
   <div
     class="super-flow"
-    ref="flow-canvas"
+    ref="superflow"
+    @mousedown="dargCanvas"
+    @mousemove="dargCanvas"
+    @mouseup="dargCanvas"
+    @wheel="zoomEvent"
+    :style="`zoom: ${cZoom}`"
     @contextmenu.prevent.stop="contextmenu">
 
     <graph-line
@@ -50,6 +55,7 @@
       :node-intercept="nodeIntercept(node)"
       :line-drop="linkAddable"
       :node-drop="draggable"
+      :drift="drift"
       @node-mousedown="nodeMousedown"
       @node-mouseenter="nodeMouseenter"
       @node-mouseleave="nodeMouseleave"

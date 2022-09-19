@@ -3,7 +3,7 @@ import GraphMenu from "../menu/menu.vue";
 import GraphNode from "../node/node.vue";
 import GraphLine from "../link/link.vue";
 import MarkLine from "../markLine/markLine.vue";
-import {reactive} from 'vue'
+import { reactive, ref, nextTick } from 'vue'
 
 import {
   getOffset,
@@ -21,6 +21,14 @@ export default {
     draggable: {
       type: Boolean,
       default: true,
+    },
+    zoomMax: {
+      type: Number,
+      default: 5
+    },
+    zoomMin: {
+      type: Number,
+      default: 0.1
     },
     linkAddable: {
       type: Boolean,
@@ -89,6 +97,16 @@ export default {
   },
   data() {
     return {
+      drift: {  // 漂移值用于处理拖拽
+        x: 3,
+        y: 3
+      },
+      drag: {
+        mouseDown: false,
+        down: {},
+        up: {}
+      }, //  拖拽区域是否按下
+      cZoom: 1,
       graph: new Graph({
         width: this.width,
         height: this.height,
@@ -99,7 +117,7 @@ export default {
         position: [0, 0],
         source: null,
         list: [],
-      }) ,
+      }),
       moveNodeConf: {
         isMove: false,
         node: null,
@@ -135,22 +153,148 @@ export default {
         height: `${bottom - top}px`,
         top: `${top + this.graph.origin[1]}px`,
         left: `${left + this.graph.origin[0]}px`,
-      };
+      }
     },
   },
   mounted() {
     document.addEventListener("mouseup", this.docMouseup);
     document.addEventListener("mousemove", this.docMousemove);
-    this.$nextTick(() => {
+    nextTick(() => {
       this.graph.initNode(this.nodeList);
       this.graph.initLink(this.linkList);
     });
   },
-  beforeUnmount(){
+  beforeUnmount() {
     document.removeEventListener("mouseup", this.docMouseup);
     document.removeEventListener("mousemove", this.docMousemove);
   },
   methods: {
+    /**
+     * @method 实现画布拖拽效果,原理为仅在渲染时，通过计算函数实现元素偏移
+     * @param event 
+     */
+    dargCanvas(event: MouseEvent) {
+      if (event.type != 'mousemove') {
+        console.log(event.type)
+      }
+      // drift
+      switch (event.type) {
+        case 'mousedown':
+          console.log('鼠标按下')
+          console.log('graph.nodeList:', this.graph.nodeList)
+          this.drag.mouseDown = true
+          this.drag.down = {
+            dx: event.x,
+            dy: event.y
+          }
+
+          break
+        case 'mousemove':
+          if (this.drag.mouseDown) {
+            console.log('graph.nodeList:', this.graph.nodeList)
+            let { x, y } = event
+            console.log('按下并移动', x, y, this.drag.down)
+
+            let { dx, dy } = this.drag.down
+            // 计算差值(仅正值)
+            let x_cha = x - dx
+            let y_cha = y - dy
+
+            // 进行减速
+            x_cha = x_cha / 10
+            y_cha = y_cha / 10
+
+            // 计算偏差并减小抖动
+            if (Math.abs(x_cha) > 3 || Math.abs(y_cha) > 3) {
+              for (let node of this.graph.nodeList) {
+                let [x, y] = node.position
+                node.position = [this.floatAdd(x, x_cha), this.floatAdd(y, y_cha)]
+              }
+            }
+          }
+          break
+        case 'mouseup':
+          console.log('抬起')
+          this.drag.mouseDown = false
+          break
+      }
+    },
+
+    /**
+ * 解决两个数相乘精度丢失问题
+ * @param a
+ * @param b
+ * @returns {Number}
+ */
+    floatMul(a: number, b: number) {
+      var c = 0,
+        d = a.toString(),
+        e = b.toString();
+      try {
+        c += d.split(".")[1].length;
+      } catch (f) { }
+      try {
+        c += e.split(".")[1].length;
+      } catch (f) { }
+      return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
+    },
+    floatAdd(a: number, b: number) {
+      var c, d, e;
+      if (undefined == a || null == a || isNaN(a)) { a = 0; }
+      if (undefined == b || null == b || isNaN(b)) { b = 0; }
+      try {
+        c = a.toString().split(".")[1].length;
+      } catch (f) {
+        c = 0;
+      }
+      try {
+        d = b.toString().split(".")[1].length;
+      } catch (f) {
+        d = 0;
+      }
+      e = Math.pow(10, Math.max(c, d));
+      return (this.floatMul(a, e) + this.floatMul(b, e)) / e;
+    },
+
+    /**
+     * @method 放大布局
+     */
+    zoomAdd() {
+      if (this.cZoom < this.zoomMax) {
+        this.cZoom = this.floatAdd(this.cZoom, 0.01)
+      }
+    },
+
+    /**
+     * @method 缩小布局
+     */
+    zoomSub() {
+      if (this.cZoom > this.zoomMin) {
+        // 不能直接相加,小数相加会有精度问题
+        this.cZoom = this.floatAdd(this.cZoom, -0.01)
+      }
+    },
+
+    /**
+     * @method 缩小与放大
+     */
+    zoomEvent(e: WheelEvent) {
+      e.preventDefault()
+      if (Math.abs(e.deltaX) !== 0 && Math.abs(e.deltaY) !== 0) return console.log('没有固定方向');
+      if (e.deltaX < 0) return console.log('向右');
+      if (e.deltaX > 0) return console.log('向左');
+      if (e.ctrlKey) {
+        if (e.deltaY > 0) { // 双指向内-缩小
+          this.zoomSub()
+        }
+        if (e.deltaY < 0) {  // 双指向外-放大
+          this.zoomAdd()
+        }
+      } else {
+        if (e.deltaY > 0) return console.log('向上');
+        if (e.deltaY < 0) return console.log('向下');
+      }
+    },
     initMenu(menu, source) {
       return menu
         .map((subList) =>
@@ -363,8 +507,8 @@ export default {
 
     nodeMouseup() {
       this.graph.addLink(this.temEdgeConf.link);
-      var {start,_end} = this.temEdgeConf.link
-      console.log('绑定关系:', '起点', start,'终点', _end)
+      var { start, _end } = this.temEdgeConf.link
+      console.log('绑定关系:', '起点', start, '终点', _end)
       start.childrens.push(_end)
     },
 
@@ -382,7 +526,7 @@ export default {
     },
 
     sideMousedown(evt, node, startAt) {
-      console.log('边缘按下',evt, node, startAt)
+      console.log('边缘按下', evt, node, startAt)
       if (this.linkAddable) {
         const link = this.graph.createLink({
           start: node,
@@ -428,7 +572,7 @@ export default {
   watch: {
     "graph.graphSelected"() {
       if (this.graph.graphSelected) {
-        this.$nextTick(() => {
+        nextTick(() => {
           this.$refs.selectAllMask.focus();
         });
       }
