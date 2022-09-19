@@ -174,12 +174,10 @@ export default {
      * @param event 
      */
     dargCanvas(event: MouseEvent) {
-      if(event.target.id != 'superflow') return
+      if(event.target.id != 'superflow' && event.type != 'mouseup' ) return
       // drift
       switch (event.type) {
         case 'mousedown':
-          console.log('鼠标按下')
-          console.log('graph.nodeList:', this.graph.nodeList)
           this.drag.mouseDown = true
           this.drag.down = {
             dx: event.x,
@@ -189,10 +187,7 @@ export default {
           break
         case 'mousemove':
           if (this.drag.mouseDown) {
-            console.log('graph.nodeList:', this.graph.nodeList)
             let { x, y } = event
-            console.log('按下并移动', x, y, this.drag.down)
-
             let { dx, dy } = this.drag.down
             // 计算差值(仅正值)
             let x_cha = x - dx
