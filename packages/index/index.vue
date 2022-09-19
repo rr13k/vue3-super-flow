@@ -6,6 +6,7 @@
 <template>
   <div
     class="super-flow"
+    id="superflow"
     ref="superflow"
     @mousedown="dargCanvas"
     @mousemove="dargCanvas"
@@ -62,7 +63,7 @@
       @node-mouseup="nodeMouseup"
       @side-mousedown="sideMousedown"
       @node-contextmenu="nodeContextmenu">
-      <template v-slot="{meta}">
+      <template v-slot="{meta}"  >
         <slot
           name="node"
           :meta="meta">

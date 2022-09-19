@@ -174,9 +174,7 @@ export default {
      * @param event 
      */
     dargCanvas(event: MouseEvent) {
-      if (event.type != 'mousemove') {
-        console.log(event.type)
-      }
+      if(event.target.id != 'superflow') return
       // drift
       switch (event.type) {
         case 'mousedown':
